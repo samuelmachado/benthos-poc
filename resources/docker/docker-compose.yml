@@ -1,0 +1,32 @@
+version: "3"
+services:
+  elasticsearch:
+    image: elasticsearch:7.14.1
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+    networks:
+      - elastic
+  benthos:
+    build:
+      context: ../../
+      dockerfile: resources/docker/Benthos
+    container_name: "benthos"
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      # - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
+      - GOOGLE_APPLICATION_CREDENTIALS=/home/.credentials/benthoskey.json
+    volumes:
+      - /c/teste:/home/.credentials
+    depends_on:
+      - elasticsearch
+    networks:
+      - elastic
+networks:
+  elastic:
+    driver: bridge

@@ -1,0 +1,10 @@
+FROM jeffail/benthos:3.46.1
+WORKDIR /benthos-poc
+COPY . .
+
+
+EXPOSE 8080
+
+
+ENTRYPOINT ["/benthos", "-c", "/benthos-poc/resources/benthos/config.yaml", "streams", "/benthos-poc/resources/benthos/streams/"]
+

@@ -1,0 +1,31 @@
+input:
+  label: ""
+  gcp_pubsub:
+    project: "benthos-325020"
+    subscription: "inbound-sub"
+    max_outstanding_messages: 1000
+    max_outstanding_bytes: 1000000000
+
+pipeline:
+  processors:
+    - sleep:
+        duration: 500ms
+    - bloblang: |
+        root.doc = this
+        root.first_name = this.names.index(0).uppercase()
+        root.last_name = this.names.index(-1).hash("sha256").encode("base64")
+
+output:
+  label: ""
+  elasticsearch:
+    urls:
+      - http://host.docker.internal:9200
+    index: benthos_index
+    id: ${!count("elastic_ids")}-${!timestamp_unix()}
+    type: doc
+    max_in_flight: 1
+    batching:
+      count: 0
+      byte_size: 0
+      period: ""
+      check: ""

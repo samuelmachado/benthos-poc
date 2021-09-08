@@ -1,0 +1,6 @@
+http:
+  address: 0.0.0.0:8080
+metrics:
+  prometheus:
+    prefix: benthos
+    path_mapping: ""
